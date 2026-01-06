@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: ghcr.io/jvizueta/ai-customer-service/waha-integrator:latest # kustomize will pin SHA in overlay
+          image: ghcr.io/JCTekDev/ai-customer-service/waha-integrator:latest # kustomize will pin SHA in overlay
           ports:
             - containerPort: 8000
           envFrom:

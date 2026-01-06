@@ -5,5 +5,5 @@ resources:
   - env.cluster.sealed.yaml
   - ../../base
 images:
-  - name: ghcr.io/jvizueta/ai-customer-service/counter-agent
+  - name: ghcr.io/JCTekDev/ai-customer-service/counter-agent
     newTag: dev-45e2bf63e3d84b6f0a1c59ed8d87fc3bfe1b54e4

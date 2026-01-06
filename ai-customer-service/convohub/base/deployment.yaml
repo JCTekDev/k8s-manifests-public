@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: convohub
-          image: ghcr.io/jvizueta/ai-customer-service/convohub:dev-latest # corrected repository path
+          image: ghcr.io/JCTekDev/ai-customer-service/convohub:dev-latest # corrected repository path
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
