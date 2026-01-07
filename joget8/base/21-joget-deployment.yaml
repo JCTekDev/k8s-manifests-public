@@ -63,6 +63,9 @@ spec:
               readOnly: true
             - name: cacerts
               mountPath: /cacerts
+            - name: tomcat-conf
+              mountPath: /deployments/apache-tomcat/conf/web.xml
+              subPath: web.xml
           readinessProbe:
             httpGet: { path: /jw, port: 8080 }
             initialDelaySeconds: 30
@@ -80,3 +83,9 @@ spec:
             secretName: wsagentes-tls-cert
         - name: cacerts
           emptyDir: {}
+        - name: tomcat-conf
+          configMap:
+            name: joget-tomcat-web-xml
+            items:
+              - key: web.xml
+                path: web.xml

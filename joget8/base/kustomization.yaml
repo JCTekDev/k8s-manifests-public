@@ -5,6 +5,7 @@ resources:
   - 11-mysql-pvc.yaml
   - 12-mysql-deployment.yaml
   - 13-mysql-service.yaml  
+  - 19-joget-tomcat-web-xml-configmap.yaml
   - 20-joget-pvc.yaml
   - 21-joget-deployment.yaml
   - 22-joget-service.yaml
