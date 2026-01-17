@@ -27,8 +27,6 @@ spec:
           env:
             - name: JAVA_HOME
               value: /usr/lib/jvm/java-11-openjdk-11.0.22.0.7-2.el8.x86_64
-            - name: WFLOW_HOME
-              value: /opt/joget/wflow
           command:
             - sh
             - -c
@@ -55,6 +53,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: JAVA_HOME
+              value: /usr/lib/jvm/java-11-openjdk-11.0.22.0.7-2.el8.x86_64
+            - name: WFLOW_HOME
+              value: /opt/joget/wflow
             - name: JAVA_OPTS
               value: "-Djavax.net.ssl.trustStore=/cacerts/cacerts -Djavax.net.ssl.trustStorePassword=changeit"
           volumeMounts:
