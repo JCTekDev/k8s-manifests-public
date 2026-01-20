@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-risk-analyzer
+  labels:
+    app: ai-risk-analyzer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-risk-analyzer
+  template:
+    metadata:
+      labels:
+        app: ai-risk-analyzer
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/jctekdev/ai-risk-analyzer:latest # kustomize will pin SHA in overlay
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: ai-risk-analyzer-config
+            - secretRef:
+                name: ai-risk-analyzer-secrets
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 60
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

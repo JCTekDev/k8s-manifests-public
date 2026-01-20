@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ai-risk-analyzer-secrets.clusterwide.sealed.yaml
+  - ai-risk-analyzer-config.yaml
+  - ../../base
+images:
+  - name: ghcr.io/jctekdev/ai-risk-analyzer
+    newTag: latest
