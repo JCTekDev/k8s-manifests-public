@@ -6,4 +6,4 @@ resources:
   - ../../base
 images:
   - name: ghcr.io/jctekdev/ai-risk-analyzer
-    newTag: latest
+    newTag: main-f547b28
