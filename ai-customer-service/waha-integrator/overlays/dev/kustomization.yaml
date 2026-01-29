@@ -5,5 +5,5 @@ resources:
   - waha-integrator-config.yaml
   - ../../base
 images:
-  - name: ghcr.io/jvizueta/ai-customer-service/waha-integrator
+  - name: ghcr.io/JCTekDev/ai-customer-service/waha-integrator
     newTag: dev-ec3202bb83e534af0e1412a88dcb4b5ed04647f3

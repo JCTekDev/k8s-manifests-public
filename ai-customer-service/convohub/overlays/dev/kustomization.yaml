@@ -5,5 +5,5 @@ resources:
   - convohub-secrets.clusterwide.sealed.yaml
   - ../../base
 images:
-  - name: ghcr.io/jvizueta/ai-customer-service/convohub
+  - name: ghcr.io/JCTekDev/ai-customer-service/convohub
     newTag: dev-11ce55b217963ae2750a1f5d939b83caa3947bd8

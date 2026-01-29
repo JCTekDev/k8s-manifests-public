@@ -4,5 +4,5 @@ resources:
   - marketing-agent-config.yaml
   - ../../base
 images:
-  - name: ghcr.io/jvizueta/ai-customer-service/marketing-agent
+  - name: ghcr.io/JCTekDev/ai-customer-service/marketing-agent
     newTag: dev-eff2e97d49090b3436645e455d42971a78b45b36

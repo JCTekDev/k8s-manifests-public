@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-risk-analyzer-config
+data:
+  # Joget Configuration
+  JOGET_BASE_URL: "http://joget-dx8-tomcat9.joget8-dev.svc.cluster.local:8080/jw"
+  
+  # LangChain Configuration
+  LANGCHAIN_TRACING_V2: "false"
+  
+  # LLM Configuration (non-sensitive defaults)
+  LLM_TEMPERATURE: "0.7"

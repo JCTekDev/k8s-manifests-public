@@ -1,0 +1,17 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  annotations:
+    sealedsecrets.bitnami.com/cluster-wide: "true"
+  creationTimestamp: null
+  name: cloudflared-cert
+spec:
+  encryptedData:
+    cert.pem: AgCerWRM96TfXoK3dD0LJX8a/0Q/husAFzVVxbETXV1FvFVV2U+AXUzdslqSo/NhLhOMZh7t5yPsecnuVIRp/xo3x4PLLn8MmxXPcqqsqbixHPYswh3A28BCFoTvZCqV4I6ECHXe+mfJU46jByJPVvAmwGgonyCVw/BliXGoO7HpZwKNKmvh0oMSCPpDIwA6xqnJkvfzuWGbKbqWYcWisWB29xL/WuwCqtvYz9cdIPiFz60I62O7RYYg/jGXge+tUxAXcuwsSG58g2R5naSsb3AkQFAY2lppNjN/eiJbkjlo6gV0zKa7ivPMEfx+oxeHOmv9s1Jrugll1SMn8Yew88zgHAJBCFVFRTg6/MJOG56ZGmDIMdtRBxB1Zbg45aLIaKvxowbaHu9/9zytXR3XWkl69dR87Ol8PfeisX2zuCUdld2uU2mDtWqRdQFEbZ/sH7GqUMeTjkCc0nILj1a0sdna/TFUoxcNkziYzswkjNUnfgDaxbeGJA6+E1Qmv/KN8JMcvMAqL+6/l7NaKI6qpF5fQwYL44EMsdbqEKmorVCvrgGhpSX3+kumcf/rruPAelHqpFa0hZACtA6TbCVBJyuWsXmABT6pV4VmshxpQsQWEvP1aEEKVPWpgPDWxLfSWKbhd8CNabEWivEi9ANdSsNoAXRcvf7ZUCPnxi4R0DqABSZ7RAKSzlo1gU6pAtshrD8wIj3Eosxh/Hcd89JHq0vcu0Vsr6merdDFiK5J1UUqG3Me5fHLGThtbGFLS1BKPkidv3pgQsd6D1YdRpE8D0/oMo8n1BLqlqeDSxPkDTWRQXBIKWbJ5hC1lQG1FsJGqWJcED0mM6SML5OuAGVq3A/2aRQher/iIsvQcsaWgfRuvb6oidJJGHGwp0514OMN8znlOAnxzuc35GpThFw8B7QesR4UDggF1RO0zKcsRCPD7hakQ1Zopm4fDeugZFuOV7j/hwn6aDXetMybW13T2PMu8wFHxCmwIeOdfwxRaxsdxGH9EYfdCksWloM3rGl2Wo7bXsZyaGgBzjCrQYCSXdF2+dk4z7ut4iO/KA==
+  template:
+    metadata:
+      annotations:
+        sealedsecrets.bitnami.com/cluster-wide: "true"
+      creationTimestamp: null
+      name: cloudflared-cert

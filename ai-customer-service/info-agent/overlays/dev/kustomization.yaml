@@ -5,5 +5,5 @@ resources:
   - info-agent-config.yaml
   - ../../base
 images:
-  - name: ghcr.io/jvizueta/ai-customer-service/info-agent
+  - name: ghcr.io/JCTekDev/ai-customer-service/info-agent
     newTag: dev-9bb9b6b139d6384d70e0883de61b2e17eb07d16b
