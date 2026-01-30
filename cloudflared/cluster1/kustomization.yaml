@@ -2,4 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - cloudflared-credentials.clusterwide.sealed.yaml
-  - cloudflared-cert.sealed.yaml
+  - cloudflared-cert.clusterwide.sealed.yaml
