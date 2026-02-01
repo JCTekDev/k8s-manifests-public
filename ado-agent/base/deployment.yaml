@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ado-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ado-agent
+  template:
+    metadata:
+      labels:
+        app: ado-agent
+    spec:
+      containers:
+        - name: agent
+          image: mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-22.04
+          env:
+            - name: AZP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ado-agent-secret
+                  key: AZP_URL
+            - name: AZP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: ado-agent-secret
+                  key: AZP_TOKEN
+            - name: AZP_POOL
+              valueFrom:
+                secretKeyRef:
+                  name: ado-agent-secret
+                  key: AZP_POOL
+            - name: AZP_AGENT_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: AZP_WORK
+              value: /azp/_work
+          volumeMounts:
+            - name: work
+              mountPath: /azp/_work
+      volumes:
+        - name: work
+          emptyDir: {}
