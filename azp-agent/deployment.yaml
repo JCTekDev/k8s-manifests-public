@@ -35,8 +35,6 @@ spec:
             - name: AZP_WORK
               value: /azp/_work
           volumeMounts:
-            - name: startup-script
-              mountPath: /scripts
             - name: work
               mountPath: /azp/_work
       volumes:
