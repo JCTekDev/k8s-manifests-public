@@ -1,4 +1,4 @@
-# Put the Azure DevOps Agent container image in the ACR (Azure Container Registry)
+# Put the Azure Pipelines Agent container image in the ACR (Azure Container Registry)
 
 ## Create the image
 Run the following command within that directory:
@@ -18,3 +18,5 @@ docker tag azp-agent:linux ghcr.io/<GITHUB_USERNAME>/azp-agent:linux
 ```
 docker push ghcr.io/<GITHUB_USERNAME>/azp-agent:linux
 ```
+
+Official Azure Pipelines Agent Container Documentation at: https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops

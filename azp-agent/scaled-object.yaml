@@ -1,10 +1,10 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: ado-agent-scaler
+  name: azp-agent-scaler
 spec:
   scaleTargetRef:
-    name: ado-agent
+    name: azp-agent
   minReplicaCount: 1
   maxReplicaCount: 10
   triggers:
@@ -13,4 +13,4 @@ spec:
         poolName: "Default"
         targetPipelinesQueueLength: "1"
       authenticationRef:
-        name: ado-agent-auth
+        name: azp-agent-auth

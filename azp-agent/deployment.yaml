@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ado-agent
+  name: azp-agent
 spec:
   selector:
     matchLabels:
-      app: ado-agent
+      app: azp-agent
   template:
     metadata:
       labels:
-        app: ado-agent
+        app: azp-agent
     spec:
       containers:
         - name: agent
@@ -20,17 +20,17 @@ spec:
             - name: AZP_URL
               valueFrom:
                 secretKeyRef:
-                  name: ado-agent-secret
+                  name: azp-agent-secret
                   key: AZP_URL
             - name: AZP_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: ado-agent-secret
+                  name: azp-agent-secret
                   key: AZP_TOKEN
             - name: AZP_POOL
               valueFrom:
                 secretKeyRef:
-                  name: ado-agent-secret
+                  name: azp-agent-secret
                   key: AZP_POOL
             - name: AZP_WORK
               value: /azp/_work
@@ -42,7 +42,7 @@ spec:
       volumes:
         - name: startup-script
           configMap:
-            name: ado-agent-startup
+            name: azp-agent-startup
             defaultMode: 0755
         - name: work
           emptyDir: {}

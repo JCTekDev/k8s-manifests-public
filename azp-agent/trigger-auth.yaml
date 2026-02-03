@@ -1,12 +1,12 @@
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
-  name: ado-agent-auth
+  name: azp-agent-auth
 spec:
   secretTargetRef:
     - parameter: personalAccessToken
-      name: ado-agent-secret
+      name: azp-agent-secret
       key: AZP_TOKEN
     - parameter: organizationURL
-      name: ado-agent-secret
+      name: azp-agent-secret
       key: AZP_URL
