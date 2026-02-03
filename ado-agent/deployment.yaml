@@ -11,8 +11,8 @@ spec:
       labels:
         app: ado-agent
     spec:
-      initContainers:
-        - name: setup
+      containers:
+        - name: agent
           image: python:3-alpine
           command:
             - /bin/sh
@@ -23,20 +23,6 @@ spec:
               apk add bash curl gcc git icu-libs jq musl-dev python3-dev libffi-dev openssl-dev cargo make
               pip install --upgrade pip
               pip install azure-cli
-              mkdir -p /azp/_work
-          volumeMounts:
-            - name: work
-              mountPath: /azp/_work
-      containers:
-        - name: agent
-          image: python:3-alpine
-          command:
-            - /bin/sh
-            - -c
-            - |
-              apk update && \
-              apk add bash curl gcc git icu-libs jq musl-dev python3-dev libffi-dev openssl-dev
-              pip install --upgrade pip azure-cli
               cd /azp
               /scripts/start.sh
           env:
