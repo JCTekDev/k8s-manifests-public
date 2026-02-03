@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: ado-agent
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: ado-agent
