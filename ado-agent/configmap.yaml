@@ -4,7 +4,7 @@ metadata:
   name: ado-agent-startup
 data:
   start.sh: |
-    #!/bin/sh
+    #!/bin/bash
     set -e
 
     if [ -z "${AZP_URL}" ]; then
