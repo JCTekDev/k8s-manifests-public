@@ -40,9 +40,5 @@ spec:
             - name: work
               mountPath: /azp/_work
       volumes:
-        - name: startup-script
-          configMap:
-            name: azp-agent-startup
-            defaultMode: 0755
         - name: work
           emptyDir: {}
