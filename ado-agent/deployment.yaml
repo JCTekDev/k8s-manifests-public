@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: agent
-          image: jctekdev/azp-agent:linux
+          image: ghcr.io/jctekdev/azp-agent:linux
           env:
             - name: TARGETARCH
               value: linux-musl-x64
