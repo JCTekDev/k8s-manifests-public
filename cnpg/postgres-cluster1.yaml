@@ -4,12 +4,12 @@ metadata:
   name: postgres-cluster1
 spec:
   instances: 2
+  superuserSecret:
+    name: postgres-cluster1-superuser
   bootstrap:
     initdb:
       database: mydb
       owner: postgres
-      secret:
-        name: postgres-cluster1-superuser
   storage:
     size: 1Gi
   postgresql:
