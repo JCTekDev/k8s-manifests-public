@@ -4,8 +4,6 @@ metadata:
   name: postgres-cluster1
 spec:
   instances: 2
-  superuserSecret:
-    name: postgres-cluster1-superuser2
   bootstrap:
     initdb:
       database: mydb
@@ -16,3 +14,5 @@ spec:
     parameters:
       shared_buffers: "64MB"
       effective_cache_size: "128MB"
+    pg_hba:
+      - host all all all trust
