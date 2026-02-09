@@ -44,7 +44,6 @@ spec:
               mountPath: /run/containerd/containerd.sock
           securityContext:
             allowPrivilegeEscalation: false
-            runAsNonRoot: true
       volumes:
         - name: work
           emptyDir: {}
