@@ -9,6 +9,9 @@ RUN apk update && \
   apk upgrade && \
   apk add bash curl gcc git icu-libs jq musl-dev python3-dev libffi-dev openssl-dev cargo make
 
+# JC - Talos - Install containerd CLI (Talos uses containerd instead of Docker)
+RUN apk add nerdctl
+
 # Install Azure CLI
 RUN pip install --upgrade pip
 RUN pip install azure-cli

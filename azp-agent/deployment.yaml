@@ -37,6 +37,12 @@ spec:
           volumeMounts:
             - name: work
               mountPath: /azp/_work
+            - name: containerd-sock
+              mountPath: /run/containerd/containerd.sock
       volumes:
         - name: work
           emptyDir: {}
+        - name: containerd-sock
+          hostPath:
+            path: /run/containerd/containerd.sock
+            type: Socket
