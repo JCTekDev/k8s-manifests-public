@@ -5,29 +5,15 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: azp-agent
+      app: ado-agent
   template:
     metadata:
       labels:
-        app: azp-agent
+        app: ado-agent
     spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
-      initContainers:
-        - name: fix-socket-permissions
-          image: busybox:latest
-          command:
-            - sh
-            - -c
-            - |
-              chmod 666 /run/containerd/containerd.sock || true
-              echo "Socket permissions fixed"
-          volumeMounts:
-            - name: containerd-sock
-              mountPath: /run/containerd
-          securityContext:
-            runAsUser: 0
       containers:
         - name: agent
           image: ghcr.io/jctekdev/azp-agent-alpine:latest
@@ -54,14 +40,10 @@ spec:
           volumeMounts:
             - name: work
               mountPath: /azp/_work
-            - name: containerd-sock
-              mountPath: /run/containerd/containerd.sock
           securityContext:
             allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
       volumes:
         - name: work
           emptyDir: {}
-        - name: containerd-sock
-          hostPath:
-            path: /run/containerd/containerd.sock
-            type: Socket
