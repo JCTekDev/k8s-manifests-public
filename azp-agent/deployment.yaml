@@ -14,6 +14,20 @@ spec:
       securityContext:
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: fix-socket-permissions
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              chmod 666 /run/containerd/containerd.sock || true
+              echo "Socket permissions fixed"
+          volumeMounts:
+            - name: containerd-sock
+              mountPath: /run/containerd
+          securityContext:
+            runAsUser: 0
       containers:
         - name: agent
           image: ghcr.io/jctekdev/azp-agent-alpine:latest
