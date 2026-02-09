@@ -11,6 +11,9 @@ spec:
       labels:
         app: azp-agent
     spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: agent
           image: ghcr.io/jctekdev/azp-agent-alpine:latest
@@ -39,6 +42,9 @@ spec:
               mountPath: /azp/_work
             - name: containerd-sock
               mountPath: /run/containerd/containerd.sock
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
       volumes:
         - name: work
           emptyDir: {}
