@@ -5,11 +5,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: ado-agent
+      app: azp-agent
   template:
     metadata:
       labels:
-        app: ado-agent
+        app: azp-agent
     spec:
       securityContext:
         seccompProfile:
@@ -17,6 +17,7 @@ spec:
       containers:
         - name: agent
           image: ghcr.io/jctekdev/azp-agent-alpine:latest
+          imagePullPolicy: Always
           env:
             - name: TARGETARCH
               value: linux-musl-x64
@@ -44,6 +45,9 @@ spec:
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
       volumes:
         - name: work
           emptyDir: {}
