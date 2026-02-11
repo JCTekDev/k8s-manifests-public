@@ -16,6 +16,9 @@ spec:
         - name: informix
           image: icr.io/informix/informix-developer-database:latest
           imagePullPolicy: IfNotPresent
+          env:
+            - name: LICENSE
+              value: "accept"
           ports:
             - name: sqlhosts
               containerPort: 9088
