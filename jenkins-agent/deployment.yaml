@@ -55,11 +55,11 @@ spec:
               value: "/home/jenkins/agent"
             - name: GIT_SSH_COMMAND
               value: "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+            - name: DOCKER_HOST
+              value: "tcp://localhost:2375"
           volumeMounts:
             - name: ssh-dir
               mountPath: /home/jenkins/.ssh
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
           resources:
             requests:
               memory: "256Mi"
@@ -67,10 +67,20 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+        - name: dind
+          image: docker:dind
+          securityContext:
+            privileged: true
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
       volumes:
         - name: ssh-dir
           emptyDir: {}
-        - name: docker-sock
-          hostPath:
-            path: /var/run/docker.sock
-            type: Socket
