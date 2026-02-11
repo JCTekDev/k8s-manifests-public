@@ -13,6 +13,21 @@ spec:
         app: jenkins-agent
     spec:
       serviceAccountName: jenkins-agent
+      initContainers:
+        - name: ssh-setup
+          image: alpine:latest
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /home/jenkins/.ssh
+              echo "Host *" > /home/jenkins/.ssh/config
+              echo "  StrictHostKeyChecking no" >> /home/jenkins/.ssh/config
+              echo "  UserKnownHostsFile=/dev/null" >> /home/jenkins/.ssh/config
+              chmod 600 /home/jenkins/.ssh/config
+          volumeMounts:
+            - name: ssh-dir
+              mountPath: /home/jenkins/.ssh
       containers:
         - name: jnlp
           image: jenkins/inbound-agent:latest
@@ -29,6 +44,9 @@ spec:
                   key: secret
             - name: JENKINS_AGENT_WORKDIR
               value: "/home/jenkins/agent"
+          volumeMounts:
+            - name: ssh-dir
+              mountPath: /home/jenkins/.ssh
           resources:
             requests:
               memory: "256Mi"
@@ -36,3 +54,6 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
+      volumes:
+        - name: ssh-dir
+          emptyDir: {}
