@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins-agent
+  template:
+    metadata:
+      labels:
+        app: jenkins-agent
+    spec:
+      containers:
+        - name: jnlp
+          image: jenkins/inbound-agent:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: JENKINS_URL
+              value: "http://jenkins:8080"
+            - name: JENKINS_AGENT_NAME
+              value: "k8s-agent"
+            - name: JENKINS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-agent-secret
+                  key: secret
+            - name: JENKINS_AGENT_WORKDIR
+              value: "/home/jenkins/agent"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
