@@ -22,9 +22,13 @@ spec:
             - |
               apk add --no-cache docker-cli
               cp /usr/bin/docker /shared/docker
+              mkdir -p /home/jenkins/agent
+              chown -R 1000:1000 /home/jenkins/agent
           volumeMounts:
             - name: shared-bin
               mountPath: /shared
+            - name: workspace
+              mountPath: /home/jenkins/agent
         - name: ssh-setup
           image: alpine:latest
           command:
@@ -70,6 +74,8 @@ spec:
               mountPath: /home/jenkins/.ssh
             - name: shared-bin
               mountPath: /shared
+            - name: workspace
+              mountPath: /home/jenkins/agent
           resources:
             requests:
               memory: "256Mi"
@@ -84,6 +90,9 @@ spec:
           env:
             - name: DOCKER_TLS_CERTDIR
               value: ""
+          volumeMounts:
+            - name: workspace
+              mountPath: /home/jenkins/agent
           resources:
             requests:
               memory: "512Mi"
@@ -95,4 +104,6 @@ spec:
         - name: ssh-dir
           emptyDir: {}
         - name: shared-bin
+          emptyDir: {}
+        - name: workspace
           emptyDir: {}
