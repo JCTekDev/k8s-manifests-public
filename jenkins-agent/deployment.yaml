@@ -12,6 +12,7 @@ spec:
       labels:
         app: jenkins-agent
     spec:
+      serviceAccountName: jenkins-agent
       containers:
         - name: jnlp
           image: jenkins/inbound-agent:latest
@@ -35,13 +36,3 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
-        - name: docker
-          image: docker:dind
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
-      volumes:
-        - name: docker-sock
-          emptyDir: {}
