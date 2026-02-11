@@ -34,8 +34,13 @@ spec:
               mountPath: /home/jenkins/.ssh
       containers:
         - name: jnlp
-          image: jenkins/inbound-agent:latest
+          image: jenkins/inbound-agent:latest-alpine-jdk21
           imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              apk add --no-cache docker-cli && \
+              exec jenkins-agent
           env:
             - name: JENKINS_URL
               value: "http://jenkins.jenkins-infra.svc.cluster.local:8080"
@@ -53,6 +58,8 @@ spec:
           volumeMounts:
             - name: ssh-dir
               mountPath: /home/jenkins/.ssh
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
           resources:
             requests:
               memory: "256Mi"
@@ -63,3 +70,7 @@ spec:
       volumes:
         - name: ssh-dir
           emptyDir: {}
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+            type: Socket
