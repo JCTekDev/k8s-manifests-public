@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: informix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: informix
+  template:
+    metadata:
+      labels:
+        app: informix
+    spec:
+      containers:
+        - name: informix
+          image: icr.io/informix/informix-developer-database:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: sqlhosts
+              containerPort: 9088
+              protocol: TCP
+            - name: drda
+              containerPort: 9089
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /opt/ibm/data
+          livenessProbe:
+            tcpSocket:
+              port: 9088
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 9088
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: informix-data
