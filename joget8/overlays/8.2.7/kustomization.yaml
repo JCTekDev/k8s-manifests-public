@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - wsagentes-tls-cert.clusterwide.sealed.yaml
+  - ../../base
+patchesStrategicMerge:
+  - joget-deployment-patch.yaml

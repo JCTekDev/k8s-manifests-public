@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: joget-dx8-tomcat9
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: import-tls-cert
+          image: jogetworkflow/joget-dx8-tomcat9:8.2.7
+      containers:
+        - name: joget
+          image: jogetworkflow/joget-dx8-tomcat9:8.2.7
