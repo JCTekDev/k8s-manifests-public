@@ -8,6 +8,12 @@ spec:
       initContainers:
         - name: import-tls-cert
           image: jogetworkflow/joget-dx8-tomcat9:8.2.7
+          env:
+            - name: JAVA_HOME
+              value: /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-2.el8.x86_64
       containers:
         - name: joget
           image: jogetworkflow/joget-dx8-tomcat9:8.2.7
+          env:
+            - name: JAVA_HOME
+              value: /usr/lib/jvm/java-11-openjdk-11.0.25.0.9-2.el8.x86_64
