@@ -14,29 +14,6 @@ spec:
       labels:
         app: cloudbeaver
     spec:
-      initContainers:
-      - name: seed-informix-driver
-        image: busybox:1.36
-        imagePullPolicy: IfNotPresent
-        command:
-        - /bin/sh
-        - -c
-        - |
-          set -euo pipefail
-          SRC=/informix-driver
-          DEST=/workspace/GlobalConfiguration/.dbeaver/drivers/informix
-          if [ ! -f "$SRC"/informix-jdbc.jar ]; then
-            echo "Informix JDBC jar not mounted; skipping seed step"
-            exit 0
-          fi
-          mkdir -p "$DEST"
-          cp "$SRC"/informix-jdbc.jar "$DEST"/informix-jdbc.jar
-          chmod 640 "$DEST"/informix-jdbc.jar
-        volumeMounts:
-        - name: informix-jdbc
-          mountPath: /informix-driver
-        - name: workspace
-          mountPath: /workspace
       containers:
       - name: cloudbeaver
         image: dbeaver/cloudbeaver:latest
@@ -54,9 +31,6 @@ spec:
         volumeMounts:
         - name: workspace
           mountPath: /opt/cloudbeaver/workspace
-        - name: informix-jdbc
-          mountPath: /opt/cloudbeaver/custom-drivers/informix
-          readOnly: true
         livenessProbe:
           httpGet:
             path: /
@@ -75,7 +49,3 @@ spec:
       - name: workspace
         persistentVolumeClaim:
           claimName: cloudbeaver-data
-      - name: informix-jdbc
-        secret:
-          secretName: informix-jdbc
-          optional: true

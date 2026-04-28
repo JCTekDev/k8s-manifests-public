@@ -6,13 +6,6 @@ resources:
   - deployment.yaml
   - service.yaml
 
-secretGenerator:
-  - name: informix-jdbc
-    files:
-      - informix-jdbc.jar=drivers/informix-jdbc.jar
-    options:
-      disableNameSuffixHash: true
-
 commonLabels:
   app.kubernetes.io/name: cloudbeaver
   app.kubernetes.io/component: database-client
