@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudbeaver
+  annotations:
+    argocd.argoproj.io/sync-options: Replace=true
   labels:
     app: cloudbeaver
 spec:
