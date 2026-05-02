@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: joget-dx9-tomcat11
+  labels:
+    app: joget-dx9-tomcat11
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: joget-dx9-tomcat11
+  template:
+    metadata:
+      labels:
+        app: joget-dx9-tomcat11
+    spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 0
+      containers:
+        - name: joget
+          image: quay.io/joget/joget-dx9-tomcat11:9.0-SNAPSHOT
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 9080
+              name: https-int
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: JAVA_OPTS_APPEND
+              value: "-Dwflow.home=/opt/joget/wflow"
+          volumeMounts:
+            - name: wflow
+              mountPath: /opt/joget/wflow
+          startupProbe:
+            httpGet:
+              path: /jw/home/
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 30
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /jw/home/
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 10
+          livenessProbe:
+            httpGet:
+              path: /jw/home/
+              port: 8080
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 10
+      volumes:
+        - name: wflow
+          persistentVolumeClaim:
+            claimName: joget-wflow-pvc

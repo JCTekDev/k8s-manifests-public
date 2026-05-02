@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - 020-configmap.yaml
-  - 030-sealedsecret-env.yaml
-  - 040-pvc.yaml
-  - 050-deployment.yaml
-  - 060-service.yaml
-  - 070-ingress.yaml
