@@ -13,3 +13,7 @@ First, set it up following the steps at https://waha.devlike.pro/docs/how-to/sec
 1. Once it's done successfully, the session status should change to "Working"
 
 
+1. In n8n, install the community node `@devlikeapro/n8n-nodes-waha` (Settings → Community Nodes → Install)
+1. In n8n, create a workflow with a **WAHA Trigger** node and copy its webhook URL
+1. Then create a default session pointing to the n8n webhook URL from the previous step
+
