@@ -10,6 +10,16 @@ spec:
       owner: postgres
   storage:
     size: 1Gi
+  managed:
+    roles:
+      - name: twenty
+        ensure: present
+        login: true
+        createdb: false
+        superuser: false
+        passwordSecret:
+          name: twentycrm-db-credentials
+
   postgresql:
     parameters:
       shared_buffers: "64MB"
