@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: twentycrm-db-extensions
+  annotations:
+    # Runs after each sync and is deleted on success, so it re-runs on the next sync.
+    # All statements use IF NOT EXISTS — safe to run repeatedly.
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: psql
+          image: postgres:16-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              until psql "$PG_URL" -c "SELECT 1" > /dev/null 2>&1; do
+                echo "Waiting for database twenty to be ready..."
+                sleep 5
+              done
+              psql "$PG_URL" \
+                -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"' \
+                -c 'CREATE EXTENSION IF NOT EXISTS pg_trgm' \
+                -c 'CREATE EXTENSION IF NOT EXISTS unaccent' \
+                -c 'CREATE EXTENSION IF NOT EXISTS pgcrypto'
+              echo "Extensions created."
+          env:
+            - name: PG_URL
+              value: "postgresql://postgres@postgres-cluster1-rw.postgres-infra.svc.cluster.local/twenty"
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "50m"
+            limits:
+              memory: "64Mi"

@@ -15,4 +15,5 @@ spec:
       shared_buffers: "64MB"
       effective_cache_size: "128MB"
     pg_hba:
+      - host twenty twenty all scram-sha-256
       - host all all all trust
