@@ -1,0 +1,98 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: twentycrm-secret-patcher
+  namespace: twentycrm-prod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: twentycrm-secret-patcher
+  namespace: twentycrm-prod
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: twentycrm-secret-patcher
+  namespace: twentycrm-prod
+subjects:
+  - kind: ServiceAccount
+    name: twentycrm-secret-patcher
+    namespace: twentycrm-prod
+roleRef:
+  kind: Role
+  name: twentycrm-secret-patcher
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: twentycrm-patch-db-url
+  namespace: twentycrm-prod
+  annotations:
+    # Runs after every successful sync to ensure PG_DATABASE_URL is correct.
+    # ArgoCD valuesFrom is not supported in Application spec sources[].helm —
+    # the Helm chart always renders the default placeholder URL. This Job reads
+    # the real connection string from twentycrm-values-secret and patches
+    # the chart-generated twentycrm-app-secrets secret.
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: twentycrm-secret-patcher
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: patch
+          image: bitnami/kubectl:1.32
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+
+              echo "Reading postgresConnectionString from twentycrm-values-secret..."
+              VALUES=$(kubectl get secret twentycrm-values-secret \
+                -n twentycrm-prod \
+                -o jsonpath='{.data.values\.yaml}' | base64 -d)
+
+              DB_URL=$(echo "$VALUES" | grep "postgresConnectionString" | \
+                sed 's/.*postgresConnectionString: *"\?\([^"]*\)"\?[[:space:]]*/\1/')
+
+              if [ -z "$DB_URL" ]; then
+                echo "ERROR: Could not parse postgresConnectionString from secret"
+                exit 1
+              fi
+
+              echo "Patching PG_DATABASE_URL in twentycrm-app-secrets..."
+              DB_URL_B64=$(echo -n "$DB_URL" | base64 | tr -d '\n')
+              kubectl patch secret twentycrm-app-secrets \
+                -n twentycrm-prod \
+                --type='json' \
+                -p="[{\"op\":\"replace\",\"path\":\"/data/PG_DATABASE_URL\",\"value\":\"$DB_URL_B64\"}]"
+
+              echo "Checking if server pods need restart (new pods read old env vars)..."
+              CURRENT_URL=$(kubectl get secret twentycrm-app-secrets \
+                -n twentycrm-prod \
+                -o jsonpath='{.data.PG_DATABASE_URL}' | base64 -d)
+
+              echo "PG_DATABASE_URL now points to: $(echo "$CURRENT_URL" | sed 's|:[^:@]*@|:***@|')"
+              echo "Done."
