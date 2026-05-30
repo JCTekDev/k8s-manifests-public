@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: browserusemcp-config
+  labels:
+    app: browserusemcp
+data:
+  # browser-use stores its LLM settings in a "db-style" config.json.
+  # The MCP server (0.12.9) has no native Ollama provider, so we drive Ollama
+  # through its OpenAI-compatible API: OPENAI_BASE_URL points at /v1 (set in the
+  # deployment) and the default model below is the Ollama model name.
+  # Change `model` here to switch models.
+  config.json: |
+    {
+      "llm": {
+        "00000000-0000-0000-0000-000000000001": {
+          "id": "00000000-0000-0000-0000-000000000001",
+          "default": true,
+          "created_at": "2026-05-30T00:00:00Z",
+          "model": "qwen2.5:14b-instruct-q6_K",
+          "api_key": "ollama",
+          "temperature": 0.2
+        }
+      }
+    }
