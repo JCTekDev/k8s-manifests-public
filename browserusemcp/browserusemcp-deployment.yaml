@@ -65,6 +65,10 @@ spec:
         - name: config
           mountPath: /config
           readOnly: true
+        # Chromium needs more shared memory than the 64Mi default /dev/shm in
+        # Kubernetes, or it hangs on startup (BrowserStartEvent times out).
+        - name: dshm
+          mountPath: /dev/shm
         # SSE keeps connections open, so probe the TCP socket instead of an
         # HTTP GET (which would hang on the event stream).
         livenessProbe:
@@ -86,3 +90,7 @@ spec:
       - name: config
         configMap:
           name: browserusemcp-config
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
