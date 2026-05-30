@@ -27,8 +27,12 @@ spec:
         # be reached through a Kubernetes Service.
         command: ["/bin/sh", "-c"]
         args:
+          # pip (the image's venv is root-owned) installs mcp-proxy into the
+          # browseruse user site (~/.local/bin), which is not on PATH, so add it
+          # before exec or `mcp-proxy` resolves to nothing (exit 127).
           - |
             pip install --no-cache-dir mcp-proxy && \
+            export PATH="$HOME/.local/bin:$PATH" && \
             exec mcp-proxy --host 0.0.0.0 --port 8000 -- browser-use --mcp
         ports:
         - containerPort: 8000
@@ -57,7 +61,7 @@ spec:
             memory: 4Gi
         volumeMounts:
         - name: data
-          mountPath: /root/.config/browseruse
+          mountPath: /home/browseruse/.config/browseruse
         - name: config
           mountPath: /config
           readOnly: true
