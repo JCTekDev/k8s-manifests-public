@@ -26,7 +26,9 @@ loop. This service uses the library directly and exposes a plain HTTP API.
 ## Notes
 
 - A 1Gi memory-backed `/dev/shm` is mounted so Chromium can start.
-- A `local-path` PVC is mounted at `/data` so the browser profile / session state
-  survives pod restarts. The app must point its `user-data-dir` at `/data` and clear
-  any stale Chrome `SingletonLock` on startup, or Chrome will hang.
+- A `local-path` PVC is mounted at `/data` to persist the browser session. The app
+  stores cookies/localStorage in `/data/storage_state.json` (env
+  `BROWSER_USE_STORAGE_STATE`); browser-use loads it on connect and writes it back
+  automatically. A persistent `user_data_dir` is intentionally not used (browser-use
+  0.12.x copies it to a temp dir and never writes it back).
 - The Deployment uses `strategy: Recreate` because the PVC is `ReadWriteOnce`.
