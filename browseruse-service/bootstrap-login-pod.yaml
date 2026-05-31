@@ -1,0 +1,85 @@
+# Bootstrap pod for manual Chrome login via noVNC.
+#
+# Usage:
+#   1. Scale down browseruse-service to 0 replicas (PVC is RWO):
+#      kubectl --context admin@taloscluster1 scale deploy/browseruse-service \
+#        -n browseruse-service-infra --replicas=0
+#
+#   2. Apply this pod:
+#      kubectl --context admin@taloscluster1 apply -f bootstrap-login-pod.yaml \
+#        -n browseruse-service-infra
+#
+#   3. Wait for the pod to be ready:
+#      kubectl --context admin@taloscluster1 wait --for=condition=ready \
+#        pod/browseruse-profile-login -n browseruse-service-infra --timeout=120s
+#
+#   4. Port-forward noVNC (KasmVNC serves on 6901 via HTTPS):
+#      kubectl --context admin@taloscluster1 port-forward \
+#        pod/browseruse-profile-login 6901:6901 -n browseruse-service-infra
+#
+#   5. Open https://localhost:6901 in your browser.
+#      Credentials: kasm_user / bootstrap
+#      Launch Chrome from the desktop or run:
+#        google-chrome --user-data-dir=/data/chrome-profile --no-first-run
+#      Log in to the required accounts (Google, Instagram, etc.).
+#      Close Chrome cleanly.
+#
+#   6. Delete the bootstrap pod:
+#      kubectl --context admin@taloscluster1 delete pod browseruse-profile-login \
+#        -n browseruse-service-infra
+#
+#   7. Scale browseruse-service back up:
+#      kubectl --context admin@taloscluster1 scale deploy/browseruse-service \
+#        -n browseruse-service-infra --replicas=1
+#
+# SECURITY:
+#   - Never expose this pod via Ingress or LoadBalancer.
+#   - Only access through kubectl port-forward.
+#   - Delete immediately after login is complete.
+#   - Do NOT commit credentials anywhere.
+#
+apiVersion: v1
+kind: Pod
+metadata:
+  name: browseruse-profile-login
+  labels:
+    app: browseruse-profile-login
+    purpose: bootstrap
+  annotations:
+    # Exclude from ArgoCD auto-sync; apply manually only.
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  restartPolicy: Never
+  containers:
+  - name: novnc-chrome
+    # Lightweight desktop with Chrome, Xvfb, x11vnc, and noVNC.
+    image: kasmweb/chrome:1.16.1
+    ports:
+    - containerPort: 6901
+      name: vnc-web
+      protocol: TCP
+    env:
+    - name: VNC_PW
+      value: "bootstrap"
+    - name: LAUNCH_URL
+      value: "about:blank"
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+    volumeMounts:
+    - name: data
+      mountPath: /data
+    - name: dshm
+      mountPath: /dev/shm
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: browseruse-service-data
+  - name: dshm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 512Mi

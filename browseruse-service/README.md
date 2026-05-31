@@ -26,9 +26,24 @@ loop. This service uses the library directly and exposes a plain HTTP API.
 ## Notes
 
 - A 1Gi memory-backed `/dev/shm` is mounted so Chromium can start.
-- A `local-path` PVC is mounted at `/data` to persist the browser session. The app
-  stores cookies/localStorage in `/data/storage_state.json` (env
-  `BROWSER_USE_STORAGE_STATE`); browser-use loads it on connect and writes it back
-  automatically. A persistent `user_data_dir` is intentionally not used (browser-use
-  0.12.x copies it to a temp dir and never writes it back).
+- A `local-path` PVC is mounted at `/data` to persist the browser session.
+- `BROWSER_USE_USER_DATA_DIR=/data/chrome-profile` provides a persistent Chrome
+  profile directory with authenticated sessions (Google, Instagram, etc.).
+- `BROWSER_USE_STORAGE_STATE=/data/storage_state.json` stores cookies/localStorage;
+  browser-use loads it on connect and writes it back automatically.
 - The Deployment uses `strategy: Recreate` because the PVC is `ReadWriteOnce`.
+
+## Bootstrap: Manual Login
+
+To seed the Chrome profile with authenticated sessions, use the bootstrap pod
+(`bootstrap-login-pod.yaml`). This is NOT managed by ArgoCD and must be applied
+manually:
+
+1. Scale down the service (`replicas=0`) so the PVC is released.
+2. `kubectl apply -f bootstrap-login-pod.yaml -n browseruse-service-infra`
+3. `kubectl port-forward pod/browseruse-profile-login 6901:6901 -n browseruse-service-infra`
+4. Open `https://localhost:6901`, launch Chrome with `--user-data-dir=/data/chrome-profile`,
+   log in to the required accounts, then close Chrome.
+5. Delete the pod and scale the service back up.
+
+See the comments inside `bootstrap-login-pod.yaml` for full step-by-step commands.
