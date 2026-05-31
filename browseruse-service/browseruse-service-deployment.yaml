@@ -24,7 +24,7 @@ spec:
       - name: browseruse-service
         # Built from github.com/devopian/browseruse-service (FastAPI + ChatOllama
         # on top of the browser-use library). See that repo for the Dockerfile.
-        image: ghcr.io/devopian/browseruse-service:latest
+        image: ghcr.io/devopian/browseruse-service:main-7b02aed
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
