@@ -16,6 +16,10 @@ spec:
       labels:
         app: browseruse-service
     spec:
+      imagePullSecrets:
+      # Unsealed from k8s-manifests-private/browseruse-service-secrets by the
+      # browseruse-service-secrets ArgoCD app (sync-wave 1).
+      - name: ghcr-pull
       containers:
       - name: browseruse-service
         # Built from github.com/devopian/browseruse-service (FastAPI + ChatOllama
