@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: browseruse-service
+  labels:
+    app: browseruse-service
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: browseruse-service
+  template:
+    metadata:
+      labels:
+        app: browseruse-service
+    spec:
+      containers:
+      - name: browseruse-service
+        # Built from github.com/devopian/browseruse-service (FastAPI + ChatOllama
+        # on top of the browser-use library). See that repo for the Dockerfile.
+        image: ghcr.io/devopian/browseruse-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        # Ollama native API base (no /v1 suffix; ChatOllama uses the native client).
+        - name: OLLAMA_HOST
+          value: "http://192.168.1.79:11434"
+        - name: BROWSER_USE_MODEL
+          value: "qwen2.5:14b-instruct-q6_K"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 20
+          periodSeconds: 30
+          timeoutSeconds: 5
+        volumeMounts:
+        # Chromium needs more shared memory than the 64Mi default /dev/shm in
+        # Kubernetes, or it hangs on startup.
+        - name: dshm
+          mountPath: /dev/shm
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
