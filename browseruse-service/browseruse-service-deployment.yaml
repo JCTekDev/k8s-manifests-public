@@ -39,12 +39,14 @@ spec:
         - name: BROWSER_USE_MAX_STEPS
           value: "15"
         resources:
+          # Real headful Chrome + Xvfb uses noticeably more memory than the
+          # previous headless Chromium, so requests/limits are raised.
           requests:
-            cpu: 250m
-            memory: 512Mi
+            cpu: 500m
+            memory: 1Gi
           limits:
             cpu: 2000m
-            memory: 4Gi
+            memory: 6Gi
         readinessProbe:
           httpGet:
             path: /health
@@ -64,8 +66,16 @@ spec:
         # Kubernetes, or it hangs on startup.
         - name: dshm
           mountPath: /dev/shm
+        # Persistent browser profile / session state so it survives pod
+        # restarts. The app must point its user-data-dir at /data and clear any
+        # stale Chrome SingletonLock on startup, or Chrome will hang.
+        - name: data
+          mountPath: /data
       volumes:
       - name: dshm
         emptyDir:
           medium: Memory
           sizeLimit: 1Gi
+      - name: data
+        persistentVolumeClaim:
+          claimName: browseruse-service-data

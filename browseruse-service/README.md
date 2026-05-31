@@ -26,4 +26,7 @@ loop. This service uses the library directly and exposes a plain HTTP API.
 ## Notes
 
 - A 1Gi memory-backed `/dev/shm` is mounted so Chromium can start.
-- Each request uses an ephemeral browser profile (no PVC), avoiding stale-lock hangs.
+- A `local-path` PVC is mounted at `/data` so the browser profile / session state
+  survives pod restarts. The app must point its `user-data-dir` at `/data` and clear
+  any stale Chrome `SingletonLock` on startup, or Chrome will hang.
+- The Deployment uses `strategy: Recreate` because the PVC is `ReadWriteOnce`.
