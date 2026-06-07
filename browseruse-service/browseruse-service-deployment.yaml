@@ -41,9 +41,6 @@ spec:
         # Persistent Chrome profile directory for authenticated sessions.
         - name: BROWSER_USE_USER_DATA_DIR
           value: "/data/chrome-profile"
-        # Playwright storage state for cookie/session reuse across restarts.
-        - name: BROWSER_USE_STORAGE_STATE
-          value: "/data/storage_state.json"
         resources:
           # Real headful Chrome + Xvfb uses noticeably more memory than the
           # previous headless Chromium, so requests/limits are raised.
