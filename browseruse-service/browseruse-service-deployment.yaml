@@ -20,6 +20,20 @@ spec:
       # Unsealed from k8s-manifests-private/browseruse-service-secrets by the
       # browseruse-service-secrets ArgoCD app before this service syncs.
       - name: ghcr-pull
+      initContainers:
+      - name: fix-profile-permissions
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          if [ -d /data/chrome-profile ]; then
+            chown -R 911:911 /data/chrome-profile
+            chmod -R u+rwX /data/chrome-profile
+          fi
+        volumeMounts:
+        - name: data
+          mountPath: /data
       containers:
       - name: browseruse-service
         # Built from github.com/devopian/browseruse-service (FastAPI + ChatOllama
