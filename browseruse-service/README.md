@@ -29,8 +29,8 @@ loop. This service uses the library directly and exposes a plain HTTP API.
 - A `local-path` PVC is mounted at `/data` to persist the browser session.
 - `BROWSER_USE_USER_DATA_DIR=/data/chrome-profile` provides a persistent Chrome
   profile directory with authenticated sessions (Google, Instagram, etc.).
-- `BROWSER_USE_STORAGE_STATE=/data/storage_state.json` stores cookies/localStorage;
-  browser-use loads it on connect and writes it back automatically.
+- `BROWSER_USE_STORAGE_STATE` is intentionally not set. The service uses the full
+  Chrome profile only, because storage state overrides profile session data.
 - The Deployment uses `strategy: Recreate` because the PVC is `ReadWriteOnce`.
 
 ## Bootstrap: Manual Login
