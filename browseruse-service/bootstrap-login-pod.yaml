@@ -19,8 +19,12 @@
 #
 #   5. Open https://localhost:6901 in your browser.
 #      Credentials: kasm_user / bootstrap
-#      Launch Chrome from the desktop or run:
-#        google-chrome --user-data-dir=/data/chrome-profile --no-first-run
+#      Close the auto-launched Chrome window, then open a terminal and run:
+#        /opt/google/chrome/chrome --password-store=basic --no-sandbox \
+#          --user-data-dir=/data/chrome-profile --no-first-run \
+#          --disable-search-engine-choice-screen --start-maximized about:blank
+#      Do not use /usr/bin/google-chrome here; the Kasm wrapper injects an empty
+#      --user-data-dir and opens a non-persistent profile.
 #      Log in to the required accounts (Google, Instagram, etc.).
 #      Close Chrome cleanly.
 #
