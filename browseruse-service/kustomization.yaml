@@ -12,4 +12,4 @@ commonLabels:
 
 images:
   - name: ghcr.io/devopian/browseruse-service
-    newTag: main-0d45536
+    newTag: main-fc99f5b
