@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-db-free
+  labels:
+    app: oracle-db-free
+spec:
+  type: ClusterIP
+  selector:
+    app: oracle-db-free
+  ports:
+    - name: oracle
+      port: 1521
+      targetPort: oracle
+      protocol: TCP

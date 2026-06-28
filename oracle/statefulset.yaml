@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oracle-db-free
+  labels:
+    app: oracle-db-free
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  serviceName: oracle-db-free
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-db-free
+  template:
+    metadata:
+      labels:
+        app: oracle-db-free
+    spec:
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: oracle-db-free
+          image: gvenzl/oracle-free:23.26.2-slim-faststart
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: oracle
+              containerPort: 1521
+              protocol: TCP
+          env:
+            - name: ORACLE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oracle-db-free-secret
+                  key: ORACLE_PASSWORD
+            - name: APP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: oracle-db-free-secret
+                  key: APP_USER
+            - name: APP_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oracle-db-free-secret
+                  key: APP_USER_PASSWORD
+          resources:
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: "2"
+              memory: 3Gi
+          startupProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - healthcheck.sh
+            failureThreshold: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - healthcheck.sh
+            periodSeconds: 30
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - bash
+                - -c
+                - healthcheck.sh
+            initialDelaySeconds: 180
+            periodSeconds: 60
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /opt/oracle/oradata
+            - name: dshm
+              mountPath: /dev/shm
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+          argocd.argoproj.io/sync-wave: "0"
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 15Gi
