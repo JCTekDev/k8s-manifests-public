@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - service.yaml
+  - service-lb.yaml
   - statefulset.yaml
 
 labels:
